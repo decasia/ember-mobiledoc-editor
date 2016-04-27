@@ -162,7 +162,7 @@ export default Component.extend({
     // Create a new editor.
     let editorOptions = this.get('editorOptions');
     editorOptions.mobiledoc = mobiledoc;
-    editorOptions.cardOptions = {
+    let componentHooks = {
       [ADD_CARD_HOOK]: ({env, options, payload}, isEditing=false) => {
         let cardId = Ember.uuid();
         let cardName = env.name;
@@ -181,6 +181,7 @@ export default Component.extend({
           cardName,
           payload,
           env,
+          options,
           editor,
           postModel: env.postModel
         });
@@ -204,6 +205,7 @@ export default Component.extend({
           atomName,
           payload,
           value,
+          options,
           callbacks: env,
           editor,
           postModel: env.postModel
@@ -220,6 +222,7 @@ export default Component.extend({
         this.get('componentAtoms').removeObject(atom);
       }
     };
+    editorOptions.cardOptions = assign(componentHooks, editorOptions.cardOptions);
     editor = new Editor(editorOptions);
     editor.willRender(() => {
       // The editor's render/rerender will happen after this `editor.willRender`,
